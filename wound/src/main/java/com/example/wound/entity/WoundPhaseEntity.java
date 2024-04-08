@@ -13,15 +13,15 @@ public class WoundPhaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String temperature;
+    private Double grade;
 
-    private Double severity;
+    private Double diameter;
 
     private String date;
 
-    private String imageName;
+    private String imagePath;
 
-    private String s3key;
+
 
     @ManyToOne
     @JoinColumn(name = "wound_id")

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,11 +21,11 @@ public class WoundEntity {
     @Enumerated(value = EnumType.STRING)
     private WoundLocation location;
 
-    private String name;
-
     @ManyToOne
     @JoinColumn(name = "patient_id")
     private PatientEntity patient;
+
+    private LocalDateTime date = LocalDateTime.now();
 
     @OneToMany(mappedBy = "wound", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WoundPhaseEntity> woundPhases = new ArrayList<>();

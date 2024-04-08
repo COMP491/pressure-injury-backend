@@ -17,4 +17,6 @@ public class AddPatientRequest {
 
     private Integer age;
 
+    private String gender;
+
 }

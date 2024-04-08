@@ -10,6 +10,7 @@ import com.example.wound.rest.requests.AddWoundRequest;
 import com.example.wound.service.PatientService;
 import com.example.wound.service.WoundService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,8 +35,13 @@ public class WoundsApiController {
     }
 
     @GetMapping("/get-patient-details")
-    public ResponseEntity<PatientDetailsDTO> getPatientDetails(@RequestParam Long id) throws IllegalArgumentException {
-        return ResponseEntity.ok().body(patientService.getPatientDetails(id));
+    public ResponseEntity<?> getPatientDetails(@RequestParam String barcode) {
+        try {
+            PatientDetailsDTO patient = patientService.getPatientDetails(barcode);
+            return ResponseEntity.ok().body(patient);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No patient found with barcode: " + barcode);
+        }
     }
 
     @GetMapping("/get-patient-wounds")

@@ -14,6 +14,7 @@ public class PatientEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
 
     private String name;
@@ -21,6 +22,8 @@ public class PatientEntity {
     private String barcode;
 
     private Integer age;
+
+    private String gender;
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     private List<WoundEntity> wounds = new ArrayList<>();

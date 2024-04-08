@@ -33,20 +33,16 @@ public class PatientService {
         return patientNames;
     }
 
-    public PatientDetailsDTO getPatientDetails(Long id) {
-        PatientEntity patient;
-        try {
-            patient = patientRepository.findAllById(id);
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e.toString());
+    public PatientDetailsDTO getPatientDetails(String barcode) {
+        PatientEntity patient = patientRepository.findByBarcode(barcode);
+        if (patient == null) {
+            throw new IllegalArgumentException("No patient found with barcode: " + barcode);
         }
-
-
         PatientDetailsDTO dto = new PatientDetailsDTO();
-        dto.setId(patient.getId());
         dto.setName(patient.getName());
         dto.setAge(patient.getAge());
         dto.setBarcode(patient.getBarcode());
+        dto.setGender(patient.getGender());
 
         return dto;
     }
@@ -64,7 +60,6 @@ public class PatientService {
         for (WoundEntity wound : patient.getWounds()) {
             PatientWoundsDTO dto = new PatientWoundsDTO();
             dto.setId(wound.getId());
-            dto.setName(wound.getName());
             dto.setLocation(wound.getLocation());
             patientWounds.add(dto);
         }
@@ -84,7 +79,6 @@ public class PatientService {
         for (WoundEntity wound : patient.getWounds()) {
             PatientWoundsDTO dto = new PatientWoundsDTO();
             dto.setId(wound.getId());
-            dto.setName(wound.getName());
             dto.setLocation(wound.getLocation());
             patientWounds.add(dto);
         }
@@ -96,6 +90,7 @@ public class PatientService {
         patient.setAge(request.getAge());
         patient.setBarcode(request.getBarcode());
         patient.setName(request.getName());
+        patient.setGender(request.getGender());
         try {
             patientRepository.save(patient);
         } catch (Exception e) {

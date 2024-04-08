@@ -37,7 +37,6 @@ public class WoundService {
             PatientEntity patient = patientRepository.findAllById(request.getPatientId());
             WoundEntity wound = new WoundEntity();
             wound.setPatient(patient);
-            wound.setName(request.getName());
             wound.setLocation(request.getLocation());
 
             patient.getWounds().add(wound);
@@ -57,8 +56,6 @@ public class WoundService {
             WoundEntity wound = woundRepository.findAllById(request.getWoundId());
             woundPhase.setWound(wound);
             woundPhase.setDate(request.getDate());
-            woundPhase.setSeverity(request.getSeverity());
-            woundPhase.setTemperature(request.getTemperature());
             wound.getWoundPhases().add(woundPhase);
 
             woundPhaseRepository.save(woundPhase);
