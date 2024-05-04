@@ -9,6 +9,7 @@ import com.example.wound.repository.InjuryPhaseRepository;
 import com.example.wound.repository.InjuryRepository;
 import com.example.wound.rest.requests.AddInjuryPhaseRequest;
 import com.example.wound.rest.requests.AddInjuryRequest;
+import com.example.wound.rest.requests.UpdateInjuryPhaseRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -90,6 +91,34 @@ public class InjuryService {
         return "Injury successfully added";
     }
 
+    public String deleteInjury(Long id) {
+        try {
+            InjuryEntity injury = injuryRepository.findById(id).orElse(null);
+            if (injury == null) {
+                return "Injury not found";
+            }
+
+            // Delete the files associated with each injury phase
+            for (InjuryPhaseEntity phase : injury.getInjuryPhases()) {
+                if (phase.getImagePath() != null) {
+                    Path imagePath = Paths.get(phase.getImagePath());
+                    Files.deleteIfExists(imagePath);
+                }
+                if (phase.getDrawingPath() != null) {
+                    Path drawingPath = Paths.get(phase.getDrawingPath());
+                    Files.deleteIfExists(drawingPath);
+                }
+            }
+
+            injuryRepository.delete(injury);
+        } catch (Exception e) {
+            return e.toString();
+        }
+
+        return "Injury successfully deleted";
+    }
+
+
     public String addInjuryPhase(MultipartFile image, MultipartFile drawingData, AddInjuryPhaseRequest request) {
         try {
             InjuryPhaseEntity injuryPhase = new InjuryPhaseEntity();
@@ -136,4 +165,70 @@ public class InjuryService {
 
         return "Injury phase successfully added";
     }
+
+    public String updateInjuryPhase(Long id, MultipartFile drawingData, UpdateInjuryPhaseRequest request) {
+        try {
+            InjuryPhaseEntity injuryPhase = injuryPhaseRepository.findById(id).orElse(null);
+            if (injuryPhase == null) {
+                return "Injury phase not found";
+            }
+
+            injuryPhase.setPhotoId(request.getPhotoId());
+            injuryPhase.setDegree(request.getDegree());
+            injuryPhase.setLength(request.getLength());
+            injuryPhase.setWidth(request.getWidth());
+            injuryPhase.setNotes(request.getNotes());
+            injuryPhase.setConditionsTicked(request.getConditionsTicked());
+
+            if (drawingData != null && !drawingData.isEmpty()) {
+
+                if (injuryPhase.getDrawingPath() != null) {
+                    Path oldDrawingPath = Paths.get(injuryPhase.getDrawingPath());
+                    Files.deleteIfExists(oldDrawingPath);
+                }
+
+                String directory = "injuryPhases";
+                String drawingFileName = request.getPhotoId() + "Drawing.data"; // Use the photoId as the file name
+                Path drawingPath = Paths.get(directory, drawingFileName);
+                Files.createDirectories(drawingPath.getParent()); // Create the directory if it doesn't exist
+                Files.write(drawingPath, drawingData.getBytes()); // Write the drawing data to the file
+                injuryPhase.setDrawingPath(drawingPath.toString());
+            }
+
+            injuryPhase.setPhotoDate(request.getPhotoDate());
+
+            injuryPhaseRepository.save(injuryPhase);
+        } catch (Exception e) {
+            return e.toString();
+        }
+
+        return "Injury phase successfully updated";
+    }
+
+
+    public String deleteInjuryPhase(Long id) {
+        try {
+            InjuryPhaseEntity injuryPhase = injuryPhaseRepository.findById(id).orElse(null);
+            if (injuryPhase == null) {
+                return "Injury phase not found";
+            }
+
+            // Delete the image and drawing data files
+            if (injuryPhase.getImagePath() != null) {
+                Path imagePath = Paths.get(injuryPhase.getImagePath());
+                Files.deleteIfExists(imagePath);
+            }
+            if (injuryPhase.getDrawingPath() != null) {
+                Path drawingPath = Paths.get(injuryPhase.getDrawingPath());
+                Files.deleteIfExists(drawingPath);
+            }
+
+            injuryPhaseRepository.delete(injuryPhase);
+        } catch (Exception e) {
+            return e.toString();
+        }
+
+        return "Injury phase successfully deleted";
+    }
+
 }

@@ -9,6 +9,7 @@ import com.example.wound.entity.InjuryPhaseEntity;
 import com.example.wound.rest.requests.AddPatientRequest;
 import com.example.wound.rest.requests.AddInjuryPhaseRequest;
 import com.example.wound.rest.requests.AddInjuryRequest;
+import com.example.wound.rest.requests.UpdateInjuryPhaseRequest;
 import com.example.wound.service.PatientService;
 import com.example.wound.service.InjuryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -75,4 +76,20 @@ public class InjuryApiController {
         return ResponseEntity.ok().body(injuryService.addInjuryPhase(image, drawingData, request));
     }
 
+    @PutMapping("/update-injury-phase/{id}")
+    public ResponseEntity<String> updateInjuryPhase(@PathVariable Long id, @RequestPart(value = "drawingData", required = false) MultipartFile drawingData, @RequestPart("request") String requestString) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        UpdateInjuryPhaseRequest request = objectMapper.readValue(requestString, UpdateInjuryPhaseRequest.class);
+        return ResponseEntity.ok().body(injuryService.updateInjuryPhase(id, drawingData, request));
+    }
+
+    @DeleteMapping("/delete-injury-phase/{id}")
+    public ResponseEntity<String> deleteInjuryPhase(@PathVariable Long id) {
+        return ResponseEntity.ok().body(injuryService.deleteInjuryPhase(id));
+    }
+
+    @DeleteMapping("/delete-injury/{id}")
+    public ResponseEntity<String> deleteInjury(@PathVariable Long id) {
+        return ResponseEntity.ok().body(injuryService.deleteInjury(id));
+    }
 }
