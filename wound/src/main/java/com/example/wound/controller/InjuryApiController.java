@@ -69,10 +69,10 @@ public class InjuryApiController {
     }
 
     @PostMapping("/add-injury-phase")
-    public ResponseEntity<String> addInjuryPhase(@RequestPart("image") MultipartFile image, @RequestPart("request") String requestString) throws JsonProcessingException {
+    public ResponseEntity<String> addInjuryPhase(@RequestPart("image") MultipartFile image, @RequestPart(value = "drawingData", required = false) MultipartFile drawingData, @RequestPart("request") String requestString) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         AddInjuryPhaseRequest request = objectMapper.readValue(requestString, AddInjuryPhaseRequest.class);
-        return ResponseEntity.ok().body(injuryService.addInjuryPhase(image, request));
+        return ResponseEntity.ok().body(injuryService.addInjuryPhase(image, drawingData, request));
     }
 
 }

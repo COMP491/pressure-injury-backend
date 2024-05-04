@@ -29,4 +29,6 @@ public class InjuryPhaseDTO {
     private List<Boolean> conditionsTicked;
 
     private byte[] image; // Add this field
+
+    private byte[] drawingData;
 }

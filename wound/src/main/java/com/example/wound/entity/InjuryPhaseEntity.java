@@ -39,5 +39,7 @@ public class InjuryPhaseEntity {
     private List<Boolean> conditionsTicked;
 
     private String imagePath;
+
+    private String drawingPath;
 }
 

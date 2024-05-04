@@ -52,6 +52,12 @@ public class InjuryService {
                 Path path = Paths.get(phase.getImagePath());
                 byte[] image = Files.readAllBytes(path);
                 dto.setImage(image);
+
+                if (phase.getDrawingPath() != null) {
+                    Path drawingPath = Paths.get(phase.getDrawingPath());
+                    byte[] drawingData = Files.readAllBytes(drawingPath);
+                    dto.setDrawingData(drawingData);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -84,7 +90,7 @@ public class InjuryService {
         return "Injury successfully added";
     }
 
-    public String addInjuryPhase(MultipartFile image, AddInjuryPhaseRequest request) {
+    public String addInjuryPhase(MultipartFile image, MultipartFile drawingData, AddInjuryPhaseRequest request) {
         try {
             InjuryPhaseEntity injuryPhase = new InjuryPhaseEntity();
             InjuryEntity injury = injuryRepository.findAllById(request.getInjuryId());
@@ -106,6 +112,18 @@ public class InjuryService {
 
             // Set the imagePath field to the path of the saved image file
             injuryPhase.setImagePath(path.toString());
+
+
+
+            if (drawingData != null && !drawingData.isEmpty()) {
+                String drawingFileName = request.getPhotoId() + "Drawing.data"; // Use the photoId as the file name
+                Path drawingPath = Paths.get(directory, drawingFileName);
+                Files.createDirectories(drawingPath.getParent()); // Create the directory if it doesn't exist
+                Files.write(drawingPath, drawingData.getBytes()); // Write the drawing data to the file
+                injuryPhase.setDrawingPath(drawingPath.toString());
+            }
+
+
 
             injuryPhase.setInjury(injury);
             injuryPhase.setPhotoDate(request.getPhotoDate());
