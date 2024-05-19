@@ -26,7 +26,7 @@ public class InjuryPhaseEntity {
     @Embedded
     private PhotoDate photoDate;
 
-    private Double degree;
+    private String degree;
 
     private Double length;
 

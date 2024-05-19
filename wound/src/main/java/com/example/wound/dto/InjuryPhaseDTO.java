@@ -17,7 +17,7 @@ public class InjuryPhaseDTO {
     @Embedded
     private PhotoDate photoDate;
 
-    private Double degree;
+    private String degree;
 
     private Double length;
 

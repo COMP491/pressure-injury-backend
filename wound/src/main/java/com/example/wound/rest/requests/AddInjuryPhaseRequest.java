@@ -20,7 +20,7 @@ public class AddInjuryPhaseRequest {
 
     private PhotoDate photoDate;
 
-    private Double degree;
+    private String degree;
 
     private Double length;
 
